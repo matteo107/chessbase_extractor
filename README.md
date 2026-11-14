@@ -1,0 +1,106 @@
+# chessbase_extractor
+
+Extracts a ChessBase database (`.2cbh` and its companion files) from a Windows
+`SetupMega…exe` installer, so a database you've bought can be used with
+ChessBase for Mac without running the Windows installer.
+
+Tested with `SetupMega2025_2cbh_v2.exe` (Mega Database 2025).
+
+## How it works
+
+The installer is two wrappers around a 7-Zip archive:
+
+```
+SetupMega2025_2cbh_v2.exe    NSIS installer (payload stored uncompressed)
+└── Mega20252cbh.exe         7-Zip self-extracting stub
+    └── 7z archive           the database files (LZMA2)
+```
+
+The NSIS layer stores its payload uncompressed, so the 7z archive sits byte
+for byte inside the outer `.exe`. The program:
+
+1. Scans the installer for the 7z signature (`7z\xBC\xAF\x27\x1C`).
+2. Validates each match (header CRC, and the archive must fit inside the
+   file) to rule out false positives.
+3. Unpacks that archive straight from the installer, checking every file's
+   CRC.
+
+It does not need Wine, 7-Zip, or any other external tool.
+
+## Requirements
+
+- Go 1.27+ (to build)
+- About 11 GB of free disk space for the Mega Database 2025 output
+
+## Usage
+
+From this folder, with the installer next to the program:
+
+```bash
+go run .
+```
+
+With no arguments it picks the only `.exe` in the current directory and
+extracts into the current directory.
+
+```bash
+go build -o chessbase_extractor .
+./chessbase_extractor [flags] [installer.exe]
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `-o dir` | `.` | Output directory |
+| `-list` | off | List the embedded files without extracting |
+| `-p password` | none | Archive password (only needed if the archive is encrypted; Mega 2025 isn't) |
+
+Examples:
+
+```bash
+./chessbase_extractor -list SetupMega2025_2cbh_v2.exe
+```
+
+```bash
+./chessbase_extractor -o ~/ChessBase/Databases SetupMega2025_2cbh_v2.exe
+```
+
+Extracting Mega Database 2025 (10.9 GiB) takes about 3 minutes on an Apple
+Silicon Mac.
+
+## Output
+
+| File | What it holds |
+|---|---|
+| `.2cbh` | Header/index: one record per game (players, event, date, result, ratings, ECO). Open this file in ChessBase. |
+| `.2cbg` | Game moves |
+| `.2cba` | Annotations: comments, variations, symbols, arrows and coloured squares |
+| `.2lid`, `.2lgd`, `.2lcd` | Lookup and index tables (players, tournaments, sources, search indexes)\* |
+| `.cko` | Opening key / classification index\* |
+| `.cpo` | Search booster / position index\* |
+| `.ini`, `.ico` | Database settings and icon |
+| `….html/` | Player photos and other pictures |
+
+\* The newer "2" format isn't publicly documented, so these roles are a best
+guess.
+
+## Importing into ChessBase for Mac
+
+Keep **all** the extracted files together in one folder, then open
+`Mega Database 2025.2cbh` in ChessBase. It finds the other files by name; if
+any are missing, the database won't open or will show games without moves or
+annotations.
+
+Once the database opens correctly, you can delete the installer `.exe` to free
+about 1.6 GB.
+
+## Limitations
+
+- It only handles installers that embed an uncompressed 7z archive (NSIS
+  wrapper + 7-Zip SFX). Other installer types (Inno Setup, MSI, compressed
+  NSIS) report `no embedded 7z archive found`.
+- Paths that would escape the output directory are refused.
+
+## Legal
+
+Use this only on databases you have bought. It doesn't bypass any copy
+protection: it unpacks the same files the Windows installer would.
