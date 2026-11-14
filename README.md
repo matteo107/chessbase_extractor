@@ -104,3 +104,20 @@ about 1.6 GB.
 
 Use this only on databases you have bought. It doesn't bypass any copy
 protection: it unpacks the same files the Windows installer would.
+
+This repository contains no ChessBase software, databases, installers or other
+ChessBase content, and none should be added to it. Don't use this tool to
+share or distribute databases.
+
+### Non-affiliation and trademarks
+
+This is an independent, unofficial project. It is not affiliated with,
+endorsed by, sponsored by or connected to ChessBase GmbH in any way.
+
+"ChessBase" and "Mega Database" are trademarks of ChessBase GmbH. Other names
+may be trademarks of their respective owners. They are used here only to
+describe what this tool works with.
+
+This software is provided "as is", without warranty of any kind. You are
+responsible for making sure your use complies with the licence terms of the
+products you have bought.
