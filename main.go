@@ -37,7 +37,11 @@ var sevenZipMagic = []byte{'7', 'z', 0xBC, 0xAF, 0x27, 0x1C}
 
 const startHeaderSize = 32 // magic(6) version(2) crc(4) nextOff(8) nextSize(8) nextCRC(4)
 
+// version is set at release build time with -ldflags "-X main.version=vX.Y.Z".
+var version = "dev"
+
 func main() {
+	showVersion := flag.Bool("version", false, "print the version and exit")
 	outDir := flag.String("o", ".", "output directory")
 	listOnly := flag.Bool("list", false, "only list the embedded files, do not extract")
 	password := flag.String("p", "", "archive password (only if the archive is encrypted)")
@@ -46,6 +50,11 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Println("chessbase_extractor", version)
+		return
+	}
 
 	if err := run(flag.Arg(0), *outDir, *password, *listOnly); err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)

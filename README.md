@@ -20,17 +20,46 @@ installer so you can import it into ChessBase for Mac.
 
 1. Download the Mega Database you want to import from your
    [ChessBase downloads page](https://shop.chessbase.com/userspace/en/downloads).
-2. Clone this project and copy the downloaded `.exe` into the project folder.
-3. Build and run the extractor:
+2. Download `chessbase_extractor_<version>_macos_universal.zip` from the
+   [latest release](https://github.com/matteo107/chessbase_extractor/releases/latest)
+   and unzip it. The program runs on both Apple Silicon and Intel Macs.
+3. Put the `chessbase_extractor` program and the downloaded `.exe` in the same
+   folder, then open Terminal in that folder and run:
 
    ```bash
-   go build -o chessbase_extractor .
-   ./chessbase_extractor [flags] [installer.exe]
+   xattr -d com.apple.quarantine chessbase_extractor
    ```
 
+   ```bash
+   ./chessbase_extractor
+   ```
+
+   The first command is needed only once. The program isn't signed by Apple,
+   so macOS blocks it until you remove the "downloaded from the internet"
+   mark. If it replies `No such xattr`, the mark wasn't there and you can
+   carry on.
 4. In ChessBase for Mac, choose **File → Open Database** and select the
-   extracted `.2cbh` file from the project folder (see
+   extracted `.2cbh` file from that folder (see
    [Importing into ChessBase for Mac](#importing-into-chessbase-for-mac)).
+
+### Building from source
+
+If you prefer, clone this project, copy the `.exe` into the project folder,
+then build and run it yourself (requires Go 1.27+):
+
+```bash
+go build -o chessbase_extractor .
+./chessbase_extractor [flags] [installer.exe]
+```
+
+### Verifying the download
+
+Each release includes a `checksums.txt` file. To check the zip wasn't
+corrupted or tampered with, run this in the folder holding both files:
+
+```bash
+shasum -a 256 -c checksums.txt
+```
 
 ## How it works
 
@@ -55,8 +84,9 @@ It does not need Wine, 7-Zip, or any other external tool.
 
 ## Requirements
 
-- Go 1.27+ (to build)
+- macOS (Apple Silicon or Intel)
 - About 11 GB of free disk space for the Mega Database 2025 output
+- Go 1.27+, only if you build from source
 
 ## Usage
 
@@ -79,6 +109,7 @@ go build -o chessbase_extractor .
 | `-o dir` | `.` | Output directory |
 | `-list` | off | List the embedded files without extracting |
 | `-p password` | none | Archive password (only needed if the archive is encrypted; Mega 2025 isn't) |
+| `-version` | off | Print the version and exit |
 
 Examples:
 
@@ -144,6 +175,7 @@ endorsed by, sponsored by or connected to ChessBase GmbH in any way.
 may be trademarks of their respective owners. They are used here only to
 describe what this tool works with.
 
-This software is provided "as is", without warranty of any kind. You are
+This software is released under the [MIT License](LICENSE) and is provided
+"as is", without warranty of any kind. You are
 responsible for making sure your use complies with the licence terms of the
 products you have bought.

@@ -1,8 +1,9 @@
 # Installers
 *.exe
 
-# Compiled binary
+# Compiled binary and release builds
 /chessbase_extractor
+/dist/
 
 # Extracted ChessBase databases (large, licensed content)
 *.2cbh
