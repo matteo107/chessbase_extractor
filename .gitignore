@@ -1,0 +1,24 @@
+# Installers
+*.exe
+
+# Compiled binary
+/chessbase_extractor
+
+# Extracted ChessBase databases (large, licensed content)
+*.2cbh
+*.2cbg
+*.2cba
+*.2lcd
+*.2lgd
+*.2lid
+*.cbh
+*.cbg
+*.cba
+*.cko
+*.cpo
+*.ini
+*.ico
+*.html/
+
+# macOS
+.DS_Store
