@@ -1,10 +1,36 @@
-# chessbase_extractor
+# Chessbase 2CBH extractor
 
 Extracts a ChessBase database (`.2cbh` and its companion files) from a Windows
 `SetupMega…exe` installer, so a database you've bought can be used with
 ChessBase for Mac without running the Windows installer.
 
 Tested with `SetupMega2025_2cbh_v2.exe` (Mega Database 2025).
+
+## Why this project
+
+ChessBase has finally released a Mac version of its famous program. But the
+databases you bought are still delivered as Windows installers (`.exe`), which
+won't run on a Mac.
+
+If, like me, you moved from Windows to Mac and no longer have your ChessBase
+databases, this tool gets them back: it extracts the database from the Windows
+installer so you can import it into ChessBase for Mac.
+
+## Getting started
+
+1. Download the Mega Database you want to import from your
+   [ChessBase downloads page](https://shop.chessbase.com/userspace/en/downloads).
+2. Clone this project and copy the downloaded `.exe` into the project folder.
+3. Build and run the extractor:
+
+   ```bash
+   go build -o chessbase_extractor .
+   ./chessbase_extractor [flags] [installer.exe]
+   ```
+
+4. In ChessBase for Mac, choose **File → Open Database** and select the
+   extracted `.2cbh` file from the project folder (see
+   [Importing into ChessBase for Mac](#importing-into-chessbase-for-mac)).
 
 ## How it works
 
